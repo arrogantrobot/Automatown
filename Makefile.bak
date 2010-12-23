@@ -1,8 +1,0 @@
-CC= g++ `pkg-config --cflags --libs gtkmm-2.4`
-CCL= g++ `pkg-config --cflags --libs gtkmm-2.4`
-
-automatown: main.cpp
-	$(CC) -o automatown main.cpp
-
-clean:
-	/bin/rm -f *~ *.o automatown
