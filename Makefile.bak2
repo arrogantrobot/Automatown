@@ -1,0 +1,17 @@
+CC= g++ `pkg-config --cflags --libs gtkmm-2.4`
+CCL= g++
+
+automatown: main.cpp Stats.o Square.o XmlModule.o
+	$(CC) -o automatown main.cpp Stats.o Square.o XmlModule.o
+
+Stats.o: Stats.cpp Stats.h Square.o
+	$(CCL) -c Stats.cpp Square.o
+
+Square.o: Square.cpp Square.h Structure.h
+	$(CCL) -c Square.cpp
+	
+XmlModule.o: XmlModule.cpp XmlModule.h Structure.h
+	$(CCL) `pkg-config --cflags --libs gtkmm-2.4` -c XmlModule.cpp
+	
+clean:
+	/bin/rm -f *~ *.o automatown

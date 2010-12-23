@@ -1,0 +1,88 @@
+#include <gtk/gtk.h>
+
+
+static gboolean delete_event( GtkWidget *widget,
+                              GdkEvent  *event,
+                              gpointer   data )
+{
+    gtk_main_quit ();
+    return FALSE;
+}
+
+void drawTiles(GdkPixbuf *src, GdkPixbuf *dest)
+{
+
+
+
+}
+
+
+int main( int   argc,	char *argv[])          
+{
+	int dest_x,dest_y,seed_x,seed_y;
+	gtk_init (&argc, &argv);
+
+	GtkWidget *image,*hbox;
+	GdkPixbuf *buf, *buf2, *buf3,
+				*empty, *tree;
+
+
+	GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    g_signal_connect (G_OBJECT (window), "delete_event",
+		      G_CALLBACK (delete_event), NULL);
+		      
+
+
+	buf = gdk_pixbuf_new_from_file("./data/triagulniki3.svg",NULL);
+	buf2 = gdk_pixbuf_scale_simple(buf,500,500,GDK_INTERP_BILINEAR);
+	buf3 = gdk_pixbuf_new_from_file("./data/grid.png",NULL);
+	
+	/*gdk_pixbuf_copy_area(			buf3,
+									1,	1,    // src x,y
+									42,	33,		//wth hth to copy
+									empty,
+									0,0);*/
+	buf3 = gdk_pixbuf_add_alpha(	buf3,
+									TRUE,
+									255,0,255);
+	dest_x = seed_x = 50;
+	dest_y = seed_y = 250;
+	for(int j=0;j<10;j++)
+	{
+		dest_x = seed_x;
+		dest_y = seed_y;
+		for(int i=0;i<10;i++)
+		{
+			dest_x += 20;
+			dest_y -= 10;
+			gdk_pixbuf_composite(	buf3,
+									buf2,
+									dest_x,	dest_y,    	//dest x,y
+									42, 	33,		//dest width, height
+									dest_x-1,	dest_y-1,			// offset
+									1,		1,			// scale
+									GDK_INTERP_BILINEAR,
+									255);
+		}
+		seed_x += 20;
+		seed_y += 10;
+	}
+	image = gtk_image_new_from_pixbuf(buf2);
+	hbox = gtk_hbox_new(FALSE,10);
+	gtk_box_pack_start(GTK_BOX(hbox),image,FALSE,FALSE,0);
+	gtk_container_add(GTK_CONTAINER(window),hbox);
+
+
+
+
+
+
+
+
+
+    gtk_widget_show_all (window);
+ 
+    gtk_main ();
+    
+	return 0;
+}

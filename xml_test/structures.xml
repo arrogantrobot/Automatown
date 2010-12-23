@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<buildings>
+<residential>
+	<house1>
+		<tileIndex>7</tileIndex>
+		<population>5</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>3</residentialDemand>
+		<type>0</type>
+	</house1>
+	<house2>
+		<tileIndex>10</tileIndex>
+		<population>7</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>5</residentialDemand>
+		<type>0</type>
+	</house2>
+</residential>
+<commercial>
+	<office1>
+		<tileIndex>9</tileIndex>
+		<population>0</population>
+		<jobs>30</jobs>
+		<industrialDemand>10</industrialDemand>
+		<commercialDemand>20</commercialDemand>
+		<residentialDemand>30</residentialDemand>
+		<type>1</type>
+	</office1>
+</commercial>
+<industrial>
+</industrial>
+<farm>
+	<field>
+		<tileIndex>6</tileIndex>
+		<population>0</population>
+		<jobs>1</jobs>
+		<industrialDemand>1</industrialDemand>
+		<commercialDemand>1</commercialDemand>
+		<residentialDemand>0</residentialDemand>	
+		<type>3</type>
+	</field>
+</farm>
+<road>
+	<road_1>
+		<tileIndex>2</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>1</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>4</type>
+	</road_1>
+	<road_2>
+		<tileIndex>3</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>1</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>4</type>
+	</road_2>
+	<road_3>
+		<tileIndex>4</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>1</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>4</type>
+	</road_3>
+</road>
+<misc>
+	<blank>
+		<tileIndex>0</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>0</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>5</type>
+	</blank>
+	<grass>
+		<tileIndex>5</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>0</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>5</type>
+	</grass>
+	<tree>
+		<tileIndex>8</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>0</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>5</type>
+	</tree>
+	<water>
+		<tileIndex>11</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>0</commercialDemand>
+		<residentialDemand>1</residentialDemand>
+		<type>5</type>
+	</water>
+</misc>
+</buildings>

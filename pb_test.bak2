@@ -1,0 +1,167 @@
+#include <gtk/gtk.h>
+#include <fstream>
+#include <vector>
+#include <iostream>
+#include <string>
+
+#define BLANK 	1
+#define TREE 	2
+#define ROAD_1	3
+#define ROAD_2	4
+#define R_INT	5
+
+GdkPixbuf *buf, *buf2, *buf3,
+			*empty, *tree, *road;
+
+static gboolean delete_event( GtkWidget *widget,
+                              GdkEvent  *event,
+                              gpointer   data )
+{
+    gtk_main_quit ();
+    return FALSE;
+}
+
+void createFile(std::vector<int> *tiles)
+{
+	for(int i=0;i<50;i++)
+	{
+		tiles->push_back(TREE);
+	}
+	for(int i=0;i<10;i++)
+	{
+		tiles->push_back(ROAD_1);
+	}	
+	for(int i=0;i<40;i++)
+	{
+		tiles->push_back(BLANK);
+	}
+	std::ofstream tileFile;
+	tileFile.open("tileFile.dat");
+	for(uint i=0;i<tiles->size();i++)
+	{
+		tileFile << (*tiles)[i] << std::endl;
+	}
+	tileFile.close();
+}
+
+void loadTiles(std::vector<int> *store, const std::string& filename)
+{
+	int buffer;
+	std::ifstream getfile;
+	getfile.open(filename.c_str());
+	for(uint i=0;i<100;i++)
+	{
+		getfile >> buffer;
+		store->push_back(buffer);
+	}
+	getfile.close();
+}
+
+void drawTiles(GdkPixbuf *dest, std::vector<int> *tiles,std::vector<int> *mapp)
+{
+	GdkPixbuf *src;
+	int dest_x,dest_y,seed_x,seed_y;
+	dest_x = seed_x = 50;
+	dest_y = seed_y = 250;
+	int tileCount=0;
+				g_print("made it here.\n");
+	for(int j=0;j<10;j++)
+	{
+		dest_x = seed_x;
+		dest_y = seed_y;
+		for(int i=0;i<10;i++)
+		{
+			std::cout << tiles->size() << std::endl;
+			dest_x += 20;
+			dest_y -= 10;
+			if((*tiles)[tileCount]==BLANK)
+			{
+				src = empty;
+			}
+			else if((*tiles)[tileCount]==TREE)
+			{
+				src = tree;
+			}
+			else
+			{
+				src = road;
+			}
+			g_print("made it here.\n");
+			gdk_pixbuf_composite(	src,
+									dest,
+									dest_x,	dest_y,    	//dest x,y
+									42, 	33,		//dest width, height
+									dest_x-1,	dest_y-1,			// offset
+									1,		1,			// scale
+									GDK_INTERP_BILINEAR,
+									255);
+			tileCount++;
+		}
+		seed_x += 20;
+		seed_y += 10;
+		tileCount++;
+	}
+}
+
+
+int main( int   argc,	char *argv[])          
+{
+	std::string tileMapping, tileData;
+	tileMapping = "tileMapping.dat";
+	tileData = "tileFile.dat";
+	gtk_init (&argc, &argv);
+
+	GtkWidget *image,*hbox;
+
+
+
+	GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    g_signal_connect (G_OBJECT (window), "delete_event",
+		      G_CALLBACK (delete_event), NULL);
+		      
+
+
+	buf = gdk_pixbuf_new_from_file("./data/triagulniki3.svg",NULL);
+	buf2 = gdk_pixbuf_scale_simple(buf,500,500,GDK_INTERP_BILINEAR);
+	buf3 = gdk_pixbuf_new_from_file("./data/grid.png",NULL);
+	buf3 = gdk_pixbuf_add_alpha(buf3, TRUE, 255, 0, 255);
+	empty = gdk_pixbuf_new_subpixbuf(buf3,0,0,43,34);
+	tree = gdk_pixbuf_new_subpixbuf(buf3,1,34,43,34);
+	road = gdk_pixbuf_new_subpixbuf(buf3,45,70,43,34);
+	gdk_pixbuf_composite(	empty,
+							buf2,
+							100,	100,    	//dest x,y
+							42, 	33,		//dest width, height
+							99,	99,			// offset
+							1,		1,			// scale
+							GDK_INTERP_BILINEAR,
+							255);
+									
+	g_print("made it here.\n");
+	std::vector<int> *tiles,*tileMap;
+	tiles = new std::vector<int>;
+	tileMap = new std::vector<int>;
+	loadTiles(tiles,tileData);
+	loadTiles(tileMap,tileMapping);
+			g_print("made it here.\n");	
+	drawTiles(buf2,tiles,tileMap);
+			g_print("made it here.\n");	
+	image = gtk_image_new_from_pixbuf(buf2);
+	hbox = gtk_hbox_new(FALSE,10);
+	gtk_box_pack_start(GTK_BOX(hbox),image,FALSE,FALSE,0);
+	gtk_container_add(GTK_CONTAINER(window),hbox);
+
+
+
+
+
+
+
+
+
+    gtk_widget_show_all (window);
+ 
+    gtk_main ();
+ 	delete tiles;   
+	return 0;
+}

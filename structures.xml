@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<buildings>
+<residential>
+	<house1>
+		<tileIndex>7</tileIndex>
+		<population>5</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>3</residentialDemand>
+		<type>0</type>
+		<structureNum>0</structureNum>
+	</house1>
+	<house2>
+		<tileIndex>10</tileIndex>
+		<population>7</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>5</residentialDemand>
+		<type>0</type>
+		<structureNum>1</structureNum>
+	</house2>
+	<house3>
+		<tileIndex>12</tileIndex>
+		<population>5</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>3</residentialDemand>
+		<type>0</type>
+		<structureNum>2</structureNum>
+	</house3>
+	<house4>
+		<tileIndex>13</tileIndex>
+		<population>7</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>3</residentialDemand>
+		<type>0</type>
+		<structureNum>3</structureNum>
+	</house4>
+	<house5>
+		<tileIndex>14</tileIndex>
+		<population>5</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>3</commercialDemand>
+		<residentialDemand>3</residentialDemand>
+		<type>0</type>
+		<structureNum>4</structureNum>
+	</house5>
+</residential>
+<commercial>
+	<office1>
+		<tileIndex>9</tileIndex>
+		<population>0</population>
+		<jobs>30</jobs>
+		<industrialDemand>10</industrialDemand>
+		<commercialDemand>20</commercialDemand>
+		<residentialDemand>30</residentialDemand>
+		<type>1</type>
+		<structureNum>5</structureNum>
+	</office1>
+	<store1>
+		<tileIndex>15</tileIndex>
+		<population>0</population>
+		<jobs>15</jobs>
+		<industrialDemand>5</industrialDemand>
+		<commercialDemand>10</commercialDemand>
+		<residentialDemand>15</residentialDemand>
+		<type>1</type>
+		<structureNum>6</structureNum>
+	</store1>
+</commercial>
+<industrial>
+</industrial>
+<farm>
+	<field>
+		<tileIndex>6</tileIndex>
+		<population>0</population>
+		<jobs>1</jobs>
+		<industrialDemand>1</industrialDemand>
+		<commercialDemand>1</commercialDemand>
+		<residentialDemand>0</residentialDemand>	
+		<type>3</type>
+		<structureNum>7</structureNum>
+	</field>
+</farm>
+<road>
+	<road_1>
+		<tileIndex>2</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>1</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>4</type>
+		<structureNum>8</structureNum>
+	</road_1>
+	<road_2>
+		<tileIndex>3</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>1</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>4</type>
+		<structureNum>9</structureNum>
+	</road_2>
+	<road_3>
+		<tileIndex>4</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>1</industrialDemand>
+		<commercialDemand>2</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>4</type>
+		<structureNum>10</structureNum>
+	</road_3>
+</road>
+<misc>
+	<blank>
+		<tileIndex>0</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>0</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>5</type>
+		<structureNum>11</structureNum>
+	</blank>
+	<grass>
+		<tileIndex>5</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>0</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>5</type>
+		<structureNum>12</structureNum>
+	</grass>
+	<tree>
+		<tileIndex>8</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>0</commercialDemand>
+		<residentialDemand>0</residentialDemand>
+		<type>5</type>
+		<structureNum>13</structureNum>
+	</tree>
+	<water>
+		<tileIndex>11</tileIndex>
+		<population>0</population>
+		<jobs>0</jobs>
+		<industrialDemand>0</industrialDemand>
+		<commercialDemand>0</commercialDemand>
+		<residentialDemand>1</residentialDemand>
+		<type>5</type>
+		<structureNum>14</structureNum>
+	</water>
+</misc>
+</buildings>
