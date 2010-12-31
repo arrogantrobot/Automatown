@@ -9,12 +9,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+
 #include "Square.h"
 #include "Stats.h"
 #include "StatsLocal.h"
 #include "Change.h"
 #include "XmlModule.h"
 #include "buildVals.h"
+#include "Turnly.cpp"
 
 #define BLANK 	0
 #define TREE 	1
@@ -432,7 +434,6 @@ gint start(gpointer data)
     return 0;
 }
 
-#include"Turnly.cpp"
 
 void initBuildings()
 {
