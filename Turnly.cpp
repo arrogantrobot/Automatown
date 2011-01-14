@@ -105,14 +105,14 @@ gint advanceTime(gpointer data)
 				c->structure = rand()%2+5;
 				changes.push_back(c);
 			}
-		}else if(commerceDecay(sl,i))
+		}/*else if(commerceDecay(sl,i))
 		{
 			change *c;
 			c = new change;
 			c->location = i;
 			c->structure = rand()%3+12;
 			changes.push_back(c);		
-		}
+		}*/
     	if(residentialGrowth(sl,i))
     	{
     		change *c;

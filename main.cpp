@@ -16,7 +16,6 @@
 #include "Change.h"
 #include "XmlModule.h"
 #include "buildVals.h"
-#include "Turnly.cpp"
 
 #define BLANK 	0
 #define TREE 	1
@@ -75,6 +74,7 @@ void changeTile(const int& location);
 void updateStats();
 statsLocal* getLocal(int tileNum);
 gint advanceTime(gpointer data);
+
 
 static gboolean delete_event( GtkWidget *widget,
                            	  GdkEvent  *event,
@@ -434,6 +434,7 @@ gint start(gpointer data)
     return 0;
 }
 
+#include "Turnly.cpp"
 
 void initBuildings()
 {
