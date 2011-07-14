@@ -153,9 +153,9 @@ void drawTiles(GdkPixbuf *dest)
 		}
 	}
 	gtk_image_set_from_pixbuf(GTK_IMAGE(image),dest);
-	g_print("testing...\n");
+	//g_print("testing...\n");
 	gameStats->updateStats(tiles);
-	gameStats->showStats();
+	//gameStats->showStats();
 	updateStats();	
 }
 
