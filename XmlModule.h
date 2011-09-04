@@ -17,18 +17,18 @@
 class XmlModule
 {
 
-	public:
-	
-	XmlModule(const std::string& filename);
-	~XmlModule();
-	
-	std::vector<Structure *> * getStructs();
+    public:
 
-	private:
-	Structure * getNums(std::string lines);
-		
-	std::string file;
-	
-	
+        XmlModule(const std::string& filename);
+        ~XmlModule();
+
+        std::vector<Structure *> * getStructs();
+
+    private:
+        Structure * getNums(std::string lines);
+
+        std::string file;
+
+
 };
 #endif

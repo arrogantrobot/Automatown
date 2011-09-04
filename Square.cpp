@@ -3,10 +3,10 @@ using namespace std;
 
 Square::Square(const int& mapCoord,const int& setLand, Structure *setStruct)
 {
-	mapCoordinate = mapCoord;
-	land = setLand;
-	building = setStruct;
-	
+    mapCoordinate = mapCoord;
+    land = setLand;
+    building = setStruct;
+
 }
 
 Square::~Square()
@@ -15,62 +15,62 @@ Square::~Square()
 
 int Square::setLand(const int& changeTo)
 {
-	int prev = land;
-	if(changeTo>=0)
-	{
-		land = changeTo;
-	}
-	else
-	{
-		prev = -1;
-	}
-	return prev;
+    int prev = land;
+    if(changeTo>=0)
+    {
+        land = changeTo;
+    }
+    else
+    {
+        prev = -1;
+    }
+    return prev;
 }
 
 void Square::setStructure(Structure *changeTo)
 {
-	building = changeTo;
+    building = changeTo;
 }
 
 int Square::getLand()
 {
-	return land;
+    return land;
 }
 
 Structure* Square::getStructure()
 {
-	return building;
+    return building;
 }
 
 int Square::getPopulation()
 {
-	return population;
+    return population;
 }
 
 bool Square::getNeedsRedraw()
 {
-	return needsRedraw;
+    return needsRedraw;
 }
 
 bool Square::getCanChange()
 {
-	return canChange;
+    return canChange;
 }
 
 void Square::setPopulation(const int& changeTo)
 {
-	if(changeTo>=0)
-	{
-		population = changeTo;
-	}
+    if(changeTo>=0)
+    {
+        population = changeTo;
+    }
 }
 
 void Square::setCanChange(const bool& changeTo)
 {
-	canChange = changeTo;
+    canChange = changeTo;
 }
 
 void Square::setNeedsRedraw(const bool& changeTo)
 {
-	needsRedraw = changeTo;
+    needsRedraw = changeTo;
 }

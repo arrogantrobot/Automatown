@@ -2,8 +2,8 @@
 #define CHANGE_H
 
 struct change{
-	int location;
-	int structure;
+    int location;
+    int structure;
 };
 
 #endif

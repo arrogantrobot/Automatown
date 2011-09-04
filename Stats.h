@@ -13,10 +13,10 @@ class Stats
         int getTotalIDem();
         int getTotalCDem();
         int getTotalRDem();
-        
+
         void updateStats(std::vector<Square *> *tiles);
         void showStats();
-    
+
     private:
         int     totalPop,
                 totalJobs,
