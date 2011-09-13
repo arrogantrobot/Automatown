@@ -47,8 +47,8 @@
 #define SPRITE_C5_X 176
 
 #define TILE_AIR_SPACE 13
-#define SEED_X 50
-#define SEED_Y 500
+#define SEED_X 100
+#define SEED_Y 520
 #define NUM_TILES 16
 #define NUM_STRUCTURES 15
 #define LOCAL_AREA 5
