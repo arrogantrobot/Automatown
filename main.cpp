@@ -28,11 +28,13 @@
 
 #define DEFAULT_TILE 0
 
-#define ROW_LENGTH 20
+#define ROW_LENGTH 30
 #define TILE_HEIGHT 20
 #define TILE_WIDTH 41
 #define SPRITE_WIDTH 42
 #define SPRITE_HEIGHT 33
+#define DISPLAY_WIDTH 702
+#define DISPLAY_HEIGHT 500
 
 #define SPRITE_C1_X 0
 #define SPRITE_R1_Y 0
@@ -51,9 +53,14 @@
 #define NUM_STRUCTURES 15
 #define LOCAL_AREA 5
 
+#define SCREEN_X_LIMIT 650
+#define SCREEN_Y_LIMIT 450
+#define V_SCROLL_INC 50
+#define H_SCROLL_INC 50
+
 Stats *gameStats;
 std::string saveFile = "automaSave.dat";
-GdkPixbuf *buf, *buf2, *buf3,
+GdkPixbuf *buf, *tile_buf, *sprites, *display_image,
           *empty, *tree, *road_1, *road_2, *road_3, *stencil,
           *grass, *field, *house1, *office1, *newtree1,
           *office,*water,*house2,*inset,*house3,*house4,
@@ -76,7 +83,9 @@ void changeTile(const int& location);
 void updateStats();
 statsLocal* getLocal(int tileNum);
 gint advanceTime(gpointer data);
-void drawScreen(GdkPixbuf* s);
+void drawScreen(); //GdkPixbuf* s);
+int get_v_scroll(int y,int inc);
+int get_h_scroll(int x,int inc);
 
 gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data);
 
@@ -118,13 +127,30 @@ void loadTiles(const std::string& filename)
     getfile.close();
 }
 
-void drawScreen(GdkPixbuf *source){
+void drawScreen(){ //GdkPixbuf *source){
 
-
-
+    GdkPixbuf * s = gdk_pixbuf_new_subpixbuf(tile_buf,scroll_x,scroll_y,
+            DISPLAY_WIDTH, DISPLAY_HEIGHT);
+/*
+    gdk_pixbuf_composite(
+        source,
+        display_image,
+        0,
+        0,    //dest x,y
+        DISPLAY_WIDTH,
+        DISPLAY_HEIGHT,//dest width, height
+        100,
+        100,// offset
+        1,
+        1,// scale
+        GDK_INTERP_BILINEAR,
+        255
+    );
+*/
+    gtk_image_set_from_pixbuf(GTK_IMAGE(image),s); //display_image);
 }
 
-void drawTiles(GdkPixbuf *dest)
+void drawTiles()//GdkPixbuf *dest)
 {
     GdkPixbuf *src;
     int dest_x,dest_y,move;
@@ -144,7 +170,7 @@ void drawTiles(GdkPixbuf *dest)
             getGlobal(move,&dest_x,&dest_y);
             gdk_pixbuf_composite(
                 src,
-                dest,
+                tile_buf,
                 dest_x,
                 dest_y,    //dest x,y
                 SPRITE_WIDTH, 
@@ -159,7 +185,7 @@ void drawTiles(GdkPixbuf *dest)
             src = (*tilePix)[(*tiles)[move]->getStructure()->tileIndex];
             gdk_pixbuf_composite(
                 src,
-                dest,
+                tile_buf,
                 dest_x,
                 dest_y,    //dest x,y
                 SPRITE_WIDTH,
@@ -174,12 +200,27 @@ void drawTiles(GdkPixbuf *dest)
             move=getLocalMove(6,move);
         }
     }
-    gtk_image_set_from_pixbuf(GTK_IMAGE(image),dest);
+    GdkPixbuf * s = gdk_pixbuf_new_subpixbuf(tile_buf,scroll_x,scroll_y,
+            DISPLAY_WIDTH, DISPLAY_HEIGHT);
+/*
+    gdk_pixbuf_composite(
+        source,
+        display_image,
+        0,
+        0,    //dest x,y
+        DISPLAY_WIDTH,
+        DISPLAY_HEIGHT,//dest width, height
+        100,
+        100,// offset
+        1,
+        1,// scale
+        GDK_INTERP_BILINEAR,
+        255
+    );
+*/
+    gtk_image_set_from_pixbuf(GTK_IMAGE(image),s); //display_image);
+    //gtk_image_set_from_pixbuf(GTK_IMAGE(image),dest);
 
-    drawScreen(dest);
-
-    gameStats->updateStats(tiles);
-    updateStats();
     //g_print("testing...\n");
 }
 
@@ -273,6 +314,9 @@ gint mapClick(GtkWidget *widg,
 
     x_pos = static_cast<int>(event->x);
     y_pos = static_cast<int>(event->y);
+    
+    x_pos += scroll_x;
+    y_pos += scroll_y;
 
     std::cout << "Xw= "<<x_pos<<" Yw= "<<y_pos<<std::endl;
 
@@ -387,9 +431,12 @@ gint mapClick(GtkWidget *widg,
 
     if(map_loc >= 0){
         changeTile(map_loc);
-        drawTiles(buf2);
+        drawTiles(); //tile_buf);
+        drawScreen(); //tile_buf);
     }
 
+    gameStats->updateStats(tiles);
+    updateStats();
     return 0;
 
 }
@@ -462,22 +509,52 @@ gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data
             exit(0);
             break;
         case GDK_Up:
-            
+            scroll_y = get_v_scroll(scroll_y,-V_SCROLL_INC);
+            break;        
 
         case GDK_Down:
+            scroll_y = get_v_scroll(scroll_y,V_SCROLL_INC);
+            break;
 
         case GDK_Right:
+            scroll_x = get_h_scroll(scroll_x,H_SCROLL_INC);
+            break;
 
         case GDK_Left:
-
+            scroll_x = get_h_scroll(scroll_x,-H_SCROLL_INC);
     
         default:
             break;
     }
+    drawScreen();
+    //std::cout << "scroll_x = "<<scroll_x<<"\tscroll_y = "<<scroll_y<<std::endl;
     uint a = 65307;
 
     return 1;
 }
+
+int get_v_scroll (int y, int inc){
+    int answer = y + inc;
+
+    if(answer < 0 ){
+        answer = 0;
+    } else if (answer > SCREEN_Y_LIMIT){
+        answer = SCREEN_Y_LIMIT;
+    }
+    return answer;
+}
+
+int get_h_scroll (int x, int inc){
+    int answer = x + inc;
+
+    if(answer < 0 ){
+        answer = 0;
+    } else if (answer > SCREEN_X_LIMIT){
+        answer = SCREEN_X_LIMIT;
+    }
+    return answer;
+}
+
 
 int main( int   argc,	char *argv[])          
 {
@@ -494,7 +571,7 @@ int main( int   argc,	char *argv[])
     GtkWidget *eventBox = gtk_event_box_new();
     GtkWidget *sidebox,*quitButton;
 
-    scroll_x = scroll_y = 500;
+    scroll_x = scroll_y = 50;
 
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     g_signal_connect (G_OBJECT (window), "delete_event",
@@ -502,51 +579,52 @@ int main( int   argc,	char *argv[])
 
 
 
-    buf2 = gdk_pixbuf_new_from_file("./data/background3_big.png",NULL);
+    tile_buf = gdk_pixbuf_new_from_file("./data/background3_big.png",NULL);
+    display_image = gdk_pixbuf_new_from_file("./data/background.png",NULL);
     inset = gdk_pixbuf_new_from_file("./data/inset.png",NULL);
-    image = gtk_image_new_from_pixbuf(buf2);
+    image = gtk_image_new_from_pixbuf(display_image);
     insetPic = gtk_image_new_from_pixbuf(inset);
-    buf3 = gdk_pixbuf_new_from_file("./data/grid4.png",NULL);
-    stencil = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C2_X,SPRITE_R4_Y,
+    sprites = gdk_pixbuf_new_from_file("./data/grid4.png",NULL);
+    stencil = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C2_X,SPRITE_R4_Y,
             TILE_WIDTH,TILE_HEIGHT);
-    buf3 = gdk_pixbuf_add_alpha(buf3, TRUE, 255, 0, 255);
+    sprites = gdk_pixbuf_add_alpha(sprites, TRUE, 255, 0, 255);
 
-    empty = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C1_X,SPRITE_R1_Y,
+    empty = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C1_X,SPRITE_R1_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    tree = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C1_X,SPRITE_R2_Y,
+    tree = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C1_X,SPRITE_R2_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    road_1 = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C2_X,SPRITE_R3_Y,
+    road_1 = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C2_X,SPRITE_R3_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    road_2 = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C1_X,SPRITE_R3_Y,
+    road_2 = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C1_X,SPRITE_R3_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    road_3 = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C1_X,SPRITE_R4_Y,
+    road_3 = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C1_X,SPRITE_R4_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    grass = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C2_X,SPRITE_R1_Y,
+    grass = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C2_X,SPRITE_R1_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    field = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C3_X,SPRITE_R2_Y,
+    field = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C3_X,SPRITE_R2_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    house1 = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C3_X,SPRITE_R3_Y,
+    house1 = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C3_X,SPRITE_R3_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    newtree1 = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C4_X,SPRITE_R1_Y,
+    newtree1 = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C4_X,SPRITE_R1_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    office = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C2_X,SPRITE_R2_Y,
+    office = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C2_X,SPRITE_R2_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    house2 = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C4_X,SPRITE_R2_Y,
+    house2 = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C4_X,SPRITE_R2_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    water = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C3_X,SPRITE_R1_Y,
+    water = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C3_X,SPRITE_R1_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    house3 = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C3_X,SPRITE_R4_Y,
+    house3 = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C3_X,SPRITE_R4_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    house4 = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C4_X,SPRITE_R3_Y,
+    house4 = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C4_X,SPRITE_R3_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    house5 = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C4_X,SPRITE_R4_Y,
+    house5 = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C4_X,SPRITE_R4_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
-    store = gdk_pixbuf_new_subpixbuf(buf3,SPRITE_C5_X,SPRITE_R1_Y,
+    store = gdk_pixbuf_new_subpixbuf(sprites,SPRITE_C5_X,SPRITE_R1_Y,
             SPRITE_WIDTH, SPRITE_HEIGHT);
 
 
 
-    //stencil = gdk_pixbuf_new_subpixbuf(buf3,45,105,42,21);
+    //stencil = gdk_pixbuf_new_subpixbuf(sprites,45,105,42,21);
 
     tilePix = new std::vector<GdkPixbuf*>;
 
@@ -569,7 +647,7 @@ int main( int   argc,	char *argv[])
 
     loadTiles(tileData);
 
-    drawTiles(buf2);
+    drawTiles();//tile_buf);
 
 
     sidebox = gtk_vbox_new(FALSE,10);
