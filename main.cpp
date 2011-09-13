@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <gdk/gdk.h>
 #include <fstream>
 #include <vector>
 #include <list>
@@ -27,7 +28,7 @@
 
 #define DEFAULT_TILE 0
 
-#define ROW_LENGTH 15
+#define ROW_LENGTH 20
 #define TILE_HEIGHT 20
 #define TILE_WIDTH 41
 #define SPRITE_WIDTH 42
@@ -45,13 +46,13 @@
 
 #define TILE_AIR_SPACE 13
 #define SEED_X 50
-#define SEED_Y 250
+#define SEED_Y 500
 #define NUM_TILES 16
 #define NUM_STRUCTURES 15
 #define LOCAL_AREA 5
 
 Stats *gameStats;
-std:: string saveFile = "automaSave.dat";
+std::string saveFile = "automaSave.dat";
 GdkPixbuf *buf, *buf2, *buf3,
           *empty, *tree, *road_1, *road_2, *road_3, *stencil,
           *grass, *field, *house1, *office1, *newtree1,
@@ -67,6 +68,7 @@ GtkWidget *image,*population,*insetPic,*startButton;
 
 int started;
 int updater;
+int scroll_x, scroll_y;
 
 void getGlobal(const int& local, int *x, int *y);
 int getLocalMove(const int& direction, const int& currentLoc);
@@ -74,7 +76,9 @@ void changeTile(const int& location);
 void updateStats();
 statsLocal* getLocal(int tileNum);
 gint advanceTime(gpointer data);
+void drawScreen(GdkPixbuf* s);
 
+gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data);
 
 static gboolean delete_event( GtkWidget *widget,
         GdkEvent  *event,
@@ -114,6 +118,12 @@ void loadTiles(const std::string& filename)
     getfile.close();
 }
 
+void drawScreen(GdkPixbuf *source){
+
+
+
+}
+
 void drawTiles(GdkPixbuf *dest)
 {
     GdkPixbuf *src;
@@ -132,31 +142,45 @@ void drawTiles(GdkPixbuf *dest)
         {
             src = (*tilePix)[(*tiles)[move]->getLand()];
             getGlobal(move,&dest_x,&dest_y);
-            gdk_pixbuf_composite(src,
-                    dest,
-                    dest_x,dest_y,    //dest x,y
-                    SPRITE_WIDTH, SPRITE_HEIGHT,//dest width, height
-                    dest_x-1,dest_y-1,// offset
-                    1,1,// scale
-                    GDK_INTERP_BILINEAR,
-                    255);
+            gdk_pixbuf_composite(
+                src,
+                dest,
+                dest_x,
+                dest_y,    //dest x,y
+                SPRITE_WIDTH, 
+                SPRITE_HEIGHT,//dest width, height
+                dest_x-1,
+                dest_y-1,// offset
+                1,
+                1,// scale
+                GDK_INTERP_BILINEAR,
+                255
+            );
             src = (*tilePix)[(*tiles)[move]->getStructure()->tileIndex];
-            gdk_pixbuf_composite(src,
-                    dest,
-                    dest_x,dest_y,    //dest x,y
-                    SPRITE_WIDTH, SPRITE_HEIGHT,//dest width, height
-                    dest_x-1,dest_y-1,// offset
-                    1,1,// scale
-                    GDK_INTERP_BILINEAR,
-                    255);
+            gdk_pixbuf_composite(
+                src,
+                dest,
+                dest_x,
+                dest_y,    //dest x,y
+                SPRITE_WIDTH,
+                SPRITE_HEIGHT,//dest width, height
+                dest_x-1,
+                dest_y-1,// offset
+                1,
+                1,// scale
+                GDK_INTERP_BILINEAR,
+                255
+            );
             move=getLocalMove(6,move);
         }
     }
     gtk_image_set_from_pixbuf(GTK_IMAGE(image),dest);
-    //g_print("testing...\n");
+
+    drawScreen(dest);
+
     gameStats->updateStats(tiles);
-    //gameStats->showStats();
     updateStats();
+    //g_print("testing...\n");
 }
 
 
@@ -174,7 +198,6 @@ int getLocalMove(const int& direction, const int& currentLoc)
     }
     if((currentLoc%ROW_LENGTH)==0)
     {
-        //printf("right = true\n");
         right = true;
     }
     if((currentLoc%ROW_LENGTH)==(ROW_LENGTH-1))
@@ -183,7 +206,6 @@ int getLocalMove(const int& direction, const int& currentLoc)
     }
     if((currentLoc+ROW_LENGTH)>=(ROW_LENGTH*ROW_LENGTH))
     {
-        //printf("bottom = true\n");
         bottom = true;
     }
     switch(direction)
@@ -280,7 +302,6 @@ gint mapClick(GtkWidget *widg,
             y_coarse--;
         }
 
-        //std::cout << "x_coarse="<<x_coarse<<" y_coarse="<<y_coarse<<std::endl;
         std::cout << "x_coarse="<<x_coarse<<" y_coarse="<<y_coarse<<std::endl;
 
         while(x_coarse>0)
@@ -310,9 +331,6 @@ gint mapClick(GtkWidget *widg,
         if(map_loc < 0)
             return 0;
 
-        //y_pos +=84;
-        //y_pos +=(TILE_HEIGHT*ROW_LENGTH)/2;
-
         x_fine = x_pos % TILE_WIDTH;
         y_fine = abs(y_pos % (TILE_HEIGHT));
         if(y_pos < 0)
@@ -320,18 +338,7 @@ gint mapClick(GtkWidget *widg,
             y_fine = TILE_HEIGHT - y_fine;
             if(y_fine == TILE_HEIGHT) y_fine--;
         }
-
-        /*//if(y_fine < 0)
-          {
-          y_fine = aby_fine;
-          g_print("y_fine = %d\n",y_fine);
-          return 0;
-          }*/
-
         std::cout <<"x_fine="<<x_fine<<" y_fine=" << y_fine << std::endl;
-
-
-
         n_channels = gdk_pixbuf_get_n_channels (stencil);
 
         g_assert (gdk_pixbuf_get_colorspace (stencil) == GDK_COLORSPACE_RGB);
@@ -378,11 +385,9 @@ gint mapClick(GtkWidget *widg,
         std::cout << "map_loc = " << map_loc << std::endl;
     }
 
-    if(map_loc >= 0)
-    {
+    if(map_loc >= 0){
         changeTile(map_loc);
         drawTiles(buf2);
-
     }
 
     return 0;
@@ -451,6 +456,29 @@ void initBuildings()
     }
 }
 
+gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+    switch( event->keyval){
+        case GDK_Escape: 
+            exit(0);
+            break;
+        case GDK_Up:
+            
+
+        case GDK_Down:
+
+        case GDK_Right:
+
+        case GDK_Left:
+
+    
+        default:
+            break;
+    }
+    uint a = 65307;
+
+    return 1;
+}
+
 int main( int   argc,	char *argv[])          
 {
     srand(time(NULL));
@@ -466,6 +494,7 @@ int main( int   argc,	char *argv[])
     GtkWidget *eventBox = gtk_event_box_new();
     GtkWidget *sidebox,*quitButton;
 
+    scroll_x = scroll_y = 500;
 
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     g_signal_connect (G_OBJECT (window), "delete_event",
@@ -473,7 +502,7 @@ int main( int   argc,	char *argv[])
 
 
 
-    buf2 = gdk_pixbuf_new_from_file("./data/background.png",NULL);
+    buf2 = gdk_pixbuf_new_from_file("./data/background3_big.png",NULL);
     inset = gdk_pixbuf_new_from_file("./data/inset.png",NULL);
     image = gtk_image_new_from_pixbuf(buf2);
     insetPic = gtk_image_new_from_pixbuf(inset);
@@ -561,6 +590,8 @@ int main( int   argc,	char *argv[])
             G_CALLBACK (gtk_main_quit),window);
     g_signal_connect(G_OBJECT (startButton), "clicked",
             G_CALLBACK (start),window);
+    g_signal_connect (G_OBJECT (window), "key_press_event",
+                    G_CALLBACK (on_key_press), NULL);
     gtk_box_pack_start(GTK_BOX(hbox),sidebox,FALSE,FALSE,0);
     gtk_box_pack_start(GTK_BOX(hbox),eventBox,FALSE,FALSE,0);
     gtk_container_add(GTK_CONTAINER(window),hbox);
