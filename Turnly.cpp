@@ -138,7 +138,7 @@ gint advanceTime(gpointer data)
             changeTileTo(changes.front()->location,changes.front()->structure);
             changes.pop_front();
         }    		
-        drawTiles(buf2);
+        drawTiles();//tile_buf);
         updateStats();
     }else{
         printf("no changes\n");
