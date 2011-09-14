@@ -22,7 +22,6 @@ statsLocal* getLocal(int tileNum){
             if(sPtr->type==4){
                 nearRoad = 1;
             }
-            //printf("s1->pop = %d\n",s1->population);
         }
         r++;
     }
@@ -91,7 +90,6 @@ gint advanceTime(gpointer data)
 {
     statsLocal * sl;
     std::list<change *> changes;
-    printf("Calling advanceTime()\n");
     for(int i=0;i<(ROW_LENGTH*ROW_LENGTH);i++)
     {
         sl = getLocal(i);
@@ -105,14 +103,7 @@ gint advanceTime(gpointer data)
                 c->structure = rand()%2+5;
                 changes.push_back(c);
             }
-        }/*else if(commerceDecay(sl,i))
-           {
-           change *c;
-           c = new change;
-           c->location = i;
-           c->structure = rand()%3+12;
-           changes.push_back(c);		
-           }*/
+        }
         if(residentialGrowth(sl,i))
         {
             change *c;
@@ -120,15 +111,7 @@ gint advanceTime(gpointer data)
             c->location = i;
             c->structure = rand()%5;
             changes.push_back(c);
-        }/*else if(residentialDecay(sl,i))
-           {
-           change *c;
-           c = new change;
-           c->location = i;
-           c->structure = rand()%3+12;
-           changes.push_back(c);
-           }  */  
-
+        }
         delete sl; 
     }
     if(!changes.empty())
@@ -138,12 +121,9 @@ gint advanceTime(gpointer data)
             changeTileTo(changes.front()->location,changes.front()->structure);
             changes.pop_front();
         }    		
-        drawTiles();//tile_buf);
+        drawTiles();
         updateStats();
-    }else{
-        printf("no changes\n");
     }
-    printf("done advancing time\n");
     return 1;
 }
 
@@ -152,7 +132,6 @@ void updateStats()
     std::string pop;
     std::ostringstream ss;
     pop = "Population: \t";
-    printf("population updated to : %d\n",gameStats->getTotalPop());
     ss << gameStats->getTotalPop();
     pop.append(ss.str().c_str());
     gtk_label_set_text(GTK_LABEL(population),pop.c_str());

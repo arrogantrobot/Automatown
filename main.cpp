@@ -103,7 +103,6 @@ void loadTiles(const std::string& filename) {
     srand(static_cast<int>(seconds));
     std::ifstream getfile;
     getfile.open(filename.c_str());
-    std::cout << filename << std::endl;
     for(int i=0;i<(ROW_LENGTH*ROW_LENGTH);i++) {
         getfile >> buffer;
         Structure *building;
@@ -256,8 +255,6 @@ gint mapClick(GtkWidget *widg, GdkEventButton *event, gpointer data) {
     x_pos += scroll_x;
     y_pos += scroll_y;
 
-    std::cout << "Xw= "<<x_pos<<" Yw= "<<y_pos<<std::endl;
-
     bool x_in = (x_pos-SEED_X)>=0;
     bool x_under = x_pos<((SEED_X+(TILE_WIDTH*ROW_LENGTH))-ROW_LENGTH);
     bool y_in = (y_pos-(SEED_Y-((TILE_HEIGHT*ROW_LENGTH/2))))>=0;
@@ -268,21 +265,14 @@ gint mapClick(GtkWidget *widg, GdkEventButton *event, gpointer data) {
         x_pos -= SEED_X;
         y_pos -= (SEED_Y+TILE_AIR_SPACE);
 
-        std::cout << "Xbc= "<<x_pos<<" Ybc= "<<y_pos<<std::endl;
-
         int width, height, rowstride, n_channels;
         guchar *pixels, *p;
-
 
         x_coarse = x_pos / TILE_WIDTH;
         y_coarse = (y_pos) / (TILE_HEIGHT); 
 
-
-        if ((y_pos)<0) {
+        if ((y_pos)<0)
             y_coarse--;
-        }
-
-        std::cout << "x_coarse="<<x_coarse<<" y_coarse="<<y_coarse<<std::endl;
 
         while (x_coarse>0) {
             map_loc = getLocalMove(6,map_loc);
@@ -303,6 +293,7 @@ gint mapClick(GtkWidget *widg, GdkEventButton *event, gpointer data) {
                 y_coarse++;
             }
         }
+
         if(map_loc < 0)
             return 0;
 
@@ -312,7 +303,7 @@ gint mapClick(GtkWidget *widg, GdkEventButton *event, gpointer data) {
             y_fine = TILE_HEIGHT - y_fine;
             if(y_fine == TILE_HEIGHT) y_fine--;
         }
-        std::cout <<"x_fine="<<x_fine<<" y_fine=" << y_fine << std::endl;
+
         n_channels = gdk_pixbuf_get_n_channels (stencil);
 
         g_assert (gdk_pixbuf_get_colorspace (stencil) == GDK_COLORSPACE_RGB);
@@ -331,13 +322,9 @@ gint mapClick(GtkWidget *widg, GdkEventButton *event, gpointer data) {
 
         p = pixels + y_fine * rowstride + x_fine * n_channels;
 
-        std::cout << "red="<<int(p[0])<<" green="<<int(p[1])
-            <<" blue="<<int(p[2])<< std::endl;
-
         r = int(p[0]);
         g = int(p[1]);
         b = int(p[2]);
-
 
         if ((b&&!r)&&!g) {
             map_loc = getLocalMove(7,map_loc);
@@ -348,14 +335,12 @@ gint mapClick(GtkWidget *widg, GdkEventButton *event, gpointer data) {
         } else if((!r&&!b)&&g) {
             map_loc = getLocalMove(1,map_loc);
         }
-
-        std::cout << "map_loc = " << map_loc << std::endl;
     }
 
     if(map_loc >= 0){
         changeTile(map_loc);
-        drawTiles(); //tile_buf);
-        drawScreen(); //tile_buf);
+        drawTiles();
+        drawScreen();
     }
     gameStats->updateStats(tiles);
     updateStats();
@@ -407,6 +392,7 @@ void initBuildings() {
     Structure *s1;
     for(unsigned int i=0;i<buildings->size();i++) {
         s1 = (*buildings)[i];
+/*
         std::cout << "s1->tileIndex = " << s1->tileIndex << std::endl;
         std::cout << "s1->population = " << s1->population << std::endl;
         std::cout << "s1->jobs = " << s1->jobs << std::endl;
@@ -414,6 +400,7 @@ void initBuildings() {
         std::cout << "s1->comDem = " << s1->commercialDemand << std::endl;
         std::cout << "s1->resDem = " << s1->residentialDemand << std::endl;
         std::cout << "s1->type = " << s1->type << std::endl;
+*/
     }
 }
 
@@ -477,7 +464,7 @@ int main( int   argc,	char *argv[]) {
     XmlModule xml(xmlfile);
     buildings = xml.getStructs();
     gameStats = new Stats;
-    GtkWidget *hbox, *vbox;
+    GtkWidget *hbox;
     GtkWidget *eventBox = gtk_event_box_new();
     GtkWidget *sidebox,*quitButton;
 
