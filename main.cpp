@@ -458,7 +458,7 @@ int main( int   argc,	char *argv[]) {
     srand(time(NULL));
     std::string tileData,xmlfile;
     xmlfile = "structures.xml";
-    tileData = "tileFile.dat";
+    tileData = "30x30tiles.dat";
     gtk_init (&argc, &argv);
     tiles = new std::vector<Square *>;
     XmlModule xml(xmlfile);
