@@ -60,7 +60,7 @@
 
 Stats *gameStats;
 std::string saveFile = "automaSave.dat";
-GdkPixbuf *buf, *tile_buf, *sprites, *display_image,
+GdkPixbuf *buf, *tile_buf, *sprites, *display_image,*background,
           *empty, *tree, *road_1, *road_2, *road_3, *stencil,
           *grass, *field, *house1, *office1, *newtree1,
           *office,*water,*house2,*inset,*house3,*house4,
@@ -127,6 +127,7 @@ void drawScreen(){
 void drawTiles(){
     GdkPixbuf *src;
     int dest_x,dest_y,move;
+    tile_buf = gdk_pixbuf_copy(background); //,DISPLAY_WIDTH,DISPLAY_HEIGHT, DISPLAY_WIDTH, DISPLAY_HEIGHT);
     for(int i=1;i<(ROW_LENGTH*2);i++) {
         if(i<=ROW_LENGTH) {
             move = ROW_LENGTH - i;
@@ -134,6 +135,7 @@ void drawTiles(){
         else {
             move = ROW_LENGTH * (i%ROW_LENGTH);
         }
+
         while(move!=-1) {
             src = (*tilePix)[(*tiles)[move]->getLand()];
             getGlobal(move,&dest_x,&dest_y);
@@ -390,18 +392,8 @@ gint start(gpointer data) {
 
 void initBuildings() {
     Structure *s1;
-    for(unsigned int i=0;i<buildings->size();i++) {
+    for(unsigned int i=0;i<buildings->size();i++)
         s1 = (*buildings)[i];
-/*
-        std::cout << "s1->tileIndex = " << s1->tileIndex << std::endl;
-        std::cout << "s1->population = " << s1->population << std::endl;
-        std::cout << "s1->jobs = " << s1->jobs << std::endl;
-        std::cout << "s1->inDem = " << s1->industrialDemand << std::endl;
-        std::cout << "s1->comDem = " << s1->commercialDemand << std::endl;
-        std::cout << "s1->resDem = " << s1->residentialDemand << std::endl;
-        std::cout << "s1->type = " << s1->type << std::endl;
-*/
-    }
 }
 
 gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
@@ -477,6 +469,7 @@ int main( int   argc,	char *argv[]) {
 
     tile_buf = gdk_pixbuf_new_from_file("./data/background3_big.png",NULL);
     display_image = gdk_pixbuf_new_from_file("./data/background.png",NULL);
+    background = gdk_pixbuf_new_from_file("./data/background3_big.png",NULL);
     inset = gdk_pixbuf_new_from_file("./data/inset.png",NULL);
     image = gtk_image_new_from_pixbuf(display_image);
     insetPic = gtk_image_new_from_pixbuf(inset);
