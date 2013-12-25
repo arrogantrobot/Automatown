@@ -13,7 +13,7 @@ CFLAGS = `pkg-config --cflags libgnomeui-2.0` -ansi -Wall \
 LIBS = `pkg-config --libs libgnomeui-2.0`
 
 automatown: main.cpp Stats.o Square.o XmlModule.o
-	$(CC) automatown main.cpp Stats.o Square.o XmlModule.o $(CFLAGS) $(LIBS)
+	$(CC) automatown main.cpp Stats.o Square.o XmlModule.o `xml2-config --libs` $(CFLAGS) $(LIBS)
 
 Neighbor.o: Neighbor.cpp Neighbor.h
 	$(CCL) Neighbor.cpp
@@ -25,7 +25,7 @@ Square.o: Square.cpp Square.h Structure.h
 	$(CCL) Square.cpp
 	
 XmlModule.o: XmlModule.cpp XmlModule.h Structure.h
-	$(CCL) XmlModule.cpp $(CFLAGS) $(LIBS)
+	$(CCL) `xml2-config --cflags` XmlModule.cpp $(CFLAGS) $(LIBS)
 	
 clean:
 	/bin/rm -f *~ *.o automatown
